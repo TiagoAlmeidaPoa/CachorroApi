@@ -16,7 +16,7 @@ import io.restassured.RestAssured;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CachorroTest {
+public class ListarCachorroTest {
 	
 	@LocalServerPort
 	private int port;
