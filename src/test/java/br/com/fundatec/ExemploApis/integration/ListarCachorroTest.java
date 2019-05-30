@@ -28,6 +28,7 @@ public class ListarCachorroTest {
 	public void setUp() {
 		RestAssured.port = port;
 		RestAssured.baseURI = "Http://localhost";
+		cachorroRepository.deleteAll();
 	}
 	
 	@Test
