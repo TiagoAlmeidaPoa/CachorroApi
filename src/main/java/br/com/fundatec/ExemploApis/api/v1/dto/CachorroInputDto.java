@@ -1,6 +1,7 @@
 package br.com.fundatec.ExemploApis.api.v1.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public class CachorroInputDto {
 	
@@ -8,8 +9,18 @@ public class CachorroInputDto {
 	private String nome;
 	private String raca;
 	private String porte;
-	private Integer idade;
+	private Integer idade;	
+	@Pattern(regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$", message = "Campo cpc inválido")
+	private String cpc;
 	
+	
+	
+	public String getCpc() {
+		return cpc;
+	}
+	public void setCpc(String cpc) {
+		this.cpc = cpc;
+	}
 	public String getNome() {
 		return nome;
 	}

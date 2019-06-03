@@ -45,7 +45,8 @@ public class IncluirCachorroTest {
 					"	\"nome\": \"Urso\"," + 
 					"	\"raca\": \"Pastor Belga\"," + 
 					"	\"porte\": \"grande\"," + 
-					"	\"idade\": 2" + 
+					"	\"idade\": 2," + 
+					"   \"cpc\": \"012.345.678-90\" " +
 					"}")
 			.when()
 			.post("/v1/cachorros")
@@ -70,7 +71,7 @@ public class IncluirCachorroTest {
 			.body("{" + 
 					"	\"raca\": \"Pastor Belga\"," + 
 					"	\"porte\": \"grande\"," + 
-					"	\"idade\": 2" + 
+					"	\"idade\": 2" +					
 					"}"
 					)
 			.when()
@@ -80,6 +81,26 @@ public class IncluirCachorroTest {
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("errors[0].defaultMessage", Matchers.equalTo("o campo nome deve ser preenchido"));
 	}
-	
+	@Test
+	public void deveValidarCpcInvalido() {
+		RestAssured
+			.given()
+			.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.body("{" + 
+					" \"nome\": \"Urso\"," +
+					"	\"raca\": \"Pastor Belga\"," + 
+					"	\"porte\": \"grande\"," + 
+					"	\"idade\": 2," + 
+					"   \"cpc\": \"cpc\" " +
+					"}"
+					)
+			.when()
+			.post("/v1/cachorros")
+			.then()
+			.assertThat()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("errors[0].defaultMessage", Matchers.equalTo("Campo cpc inválido"));
+	}
 
 }
