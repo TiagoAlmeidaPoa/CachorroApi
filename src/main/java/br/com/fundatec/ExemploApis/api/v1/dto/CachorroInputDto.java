@@ -1,6 +1,10 @@
 package br.com.fundatec.ExemploApis.api.v1.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class CachorroInputDto {
+	
+	@NotBlank(message = "o campo nome deve ser preenchido")
 	private String nome;
 	private String raca;
 	private String porte;

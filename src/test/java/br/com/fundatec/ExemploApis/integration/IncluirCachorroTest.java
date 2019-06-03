@@ -1,7 +1,5 @@
 package br.com.fundatec.ExemploApis.integration;
 
-import javax.print.attribute.standard.Media;
-
 import org.apache.http.HttpHeaders;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -61,6 +59,26 @@ public class IncluirCachorroTest {
 			.statusCode(HttpStatus.CREATED.value());
 
 		Assert.assertTrue(cachorroRepository.count() > 0);				
+	}
+	
+	@Test
+	public void deveValidarCachorroSemNome() {
+		RestAssured
+			.given()
+			.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			.body("{" + 
+					"	\"raca\": \"Pastor Belga\"," + 
+					"	\"porte\": \"grande\"," + 
+					"	\"idade\": 2" + 
+					"}"
+					)
+			.when()
+			.post("/v1/cachorros")
+			.then()
+			.assertThat()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("errors[0].defaultMessage", Matchers.equalTo("o campo nome deve ser preenchido"));
 	}
 	
 
