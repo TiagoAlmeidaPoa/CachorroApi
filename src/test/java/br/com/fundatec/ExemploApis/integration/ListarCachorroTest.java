@@ -15,7 +15,7 @@ import br.com.fundatec.ExemploApis.repository.CachorroRepository;
 import io.restassured.RestAssured;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) 
 public class ListarCachorroTest {
 	
 	@LocalServerPort
@@ -47,7 +47,7 @@ public class ListarCachorroTest {
 				.body("raca", Matchers.hasItems("Poodle", "Pitbull"))
 				.body("porte", Matchers.hasItems("Medio", "Grande"))
 				.body("idade", Matchers.hasItems(15, 4))
-				.statusCode(HttpStatus.OK.value());
+				.statusCode(HttpStatus.OK.value()); // status 200
 	}
 
 }

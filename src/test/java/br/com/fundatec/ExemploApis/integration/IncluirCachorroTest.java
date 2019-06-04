@@ -44,7 +44,7 @@ public class IncluirCachorroTest {
 			.body("{" + 
 					"	\"nome\": \"Urso\"," + 
 					"	\"raca\": \"Pastor Belga\"," + 
-					"	\"porte\": \"grande\"," + 
+					"	\"porte\": \"Grande\"," + 
 					"	\"idade\": 2," + 
 					"   \"cpc\": \"012.345.678-90\" " +
 					"}")
@@ -54,12 +54,12 @@ public class IncluirCachorroTest {
 			.assertThat()
 			.body("nome", Matchers.equalTo("Urso"))
 			.body("raca", Matchers.equalTo("Pastor Belga"))
-			.body("porte", Matchers.equalTo("grande"))
+			.body("porte", Matchers.equalTo("Grande"))
 			.body("idade", Matchers.equalTo(2))
 			.body("id", Matchers.greaterThan(0))
 			.statusCode(HttpStatus.CREATED.value());
 
-		Assert.assertTrue(cachorroRepository.count() > 0);				
+		Assert.assertTrue(cachorroRepository.count() > 0);	// verifica o banco de dados			
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class IncluirCachorroTest {
 			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 			.body("{" + 
 					"	\"raca\": \"Pastor Belga\"," + 
-					"	\"porte\": \"grande\"," + 
+					"	\"porte\": \"Grande\"," + 
 					"	\"idade\": 2" +					
 					"}"
 					)
@@ -90,7 +90,7 @@ public class IncluirCachorroTest {
 			.body("{" + 
 					" \"nome\": \"Urso\"," +
 					"	\"raca\": \"Pastor Belga\"," + 
-					"	\"porte\": \"grande\"," + 
+					"	\"porte\": \"Grande\"," + 
 					"	\"idade\": 2," + 
 					"   \"cpc\": \"cpc\" " +
 					"}"
@@ -101,6 +101,28 @@ public class IncluirCachorroTest {
 			.assertThat()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("errors[0].defaultMessage", Matchers.equalTo("Campo cpc inválido"));
+	}
+	
+	@Test
+	public void deveValidarPorteDoCachorro () {
+		RestAssured
+		.given()
+		.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+		.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+		.body("{" + 
+				" \"nome\": \"Urso\"," +
+				"	\"raca\": \"Pastor Belga\"," + 
+				"	\"porte\": \"grande\"," + 
+				"	\"idade\": 2," + 
+				"   \"cpc\": \"012.345.678-90\" " +
+				"}"
+				)
+		.when()
+		.post("/v1/cachorros")
+		.then()
+		.assertThat()
+		.statusCode(HttpStatus.BAD_REQUEST.value())
+		.body("errors[0].defaultMessage", Matchers.equalTo("Campo porte inválido"));
 	}
 
 }
