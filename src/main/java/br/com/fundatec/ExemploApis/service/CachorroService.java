@@ -24,7 +24,7 @@ public class CachorroService {
 		return (List<Cachorro>) cachorroRepository.findAll();
 	}
 	
-	public Cachorro incluir(Cachorro cachorro) { // aqui estou incluindo no banco
+	public Cachorro salvar(Cachorro cachorro) { // aqui estou incluindo no banco
 		validarSalvarCachorro(cachorro);
 		return cachorroRepository.save(cachorro);
 	}
