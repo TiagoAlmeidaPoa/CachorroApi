@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.fundatec.ExemploApis.entity.Cachorro;
 import br.com.fundatec.ExemploApis.repository.CachorroRepository;
+import javassist.NotFoundException;
 
 @Service
 public class CachorroService {
@@ -37,6 +38,12 @@ public class CachorroService {
 		if(!porteParametroService.porteValido(cachorro.getPorte())) {
 			throw new IllegalArgumentException("porte invalido. porte deve ser Pequeno, Médio ou Grande");
 		}		
+	}
+
+	public Cachorro consultar(Long id) {
+		
+		return cachorroRepository.findById(id)
+				.orElseThrow(()-> new RuntimeException("Não encontrou cachorro para o id"+id));
 	}
 
 }

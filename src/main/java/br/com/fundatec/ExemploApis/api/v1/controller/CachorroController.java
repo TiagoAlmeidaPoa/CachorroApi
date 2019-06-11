@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.fundatec.ExemploApis.api.v1.dto.CachorroInputDto;
 import br.com.fundatec.ExemploApis.api.v1.dto.CachorroOutputDto;
 import br.com.fundatec.ExemploApis.api.v1.dto.ErroDto;
+import br.com.fundatec.ExemploApis.api.v1.dto.cachorroAlterarIdadeDto;
 import br.com.fundatec.ExemploApis.entity.Cachorro;
 import br.com.fundatec.ExemploApis.mapper.CachorroMapper;
 import br.com.fundatec.ExemploApis.service.CachorroService;
@@ -72,8 +75,16 @@ public class CachorroController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroDto);
 		}
 		
-		
 	}
+	
+	@PatchMapping("/v1/cachorros/{id}")
+	public ResponseEntity<?> alterarIdadeCachorro(@PathVariable Long id,@Valid @RequestBody cachorroAlterarIdadeDto cachorroAlterarIdadeDto){
+		Cachorro cachorro = cachorroService.consultar(id);
+		cachorro.setIdade(cachorroAlterarIdadeDto.getIdade());
+		cachorro = cachorroService.salvar(cachorro);
+		CachorroOutputDto cachorroOutputDto = cachorroMapper.mapearCachorroOutPutDto(cachorro);
+		return ResponseEntity.ok(cachorroOutputDto);
+	} 
 	
 
 }
