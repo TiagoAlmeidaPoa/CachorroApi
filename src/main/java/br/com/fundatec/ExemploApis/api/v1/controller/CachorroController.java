@@ -57,12 +57,23 @@ public class CachorroController {
 	}
 	
 	@PutMapping("/v1/cachorros/{id}")
-	public ResponseEntity<?> alterarCachorro(@PathVariable Long id, @RequestBody CachorroInputDto cachorroInputDto) {
-		Cachorro cachorro = cachorroMapper.mapearCachorro(cachorroInputDto);
-		cachorro.setId(id);
-		cachorro = cachorroService.salvar(cachorro);
-		CachorroOutputDto cachorroOutputDto = cachorroMapper.mapearCachorroOutPutDto(cachorro);
-		return ResponseEntity.ok(cachorroOutputDto);
+	public ResponseEntity<?> alterarCachorro(@PathVariable Long id,@Valid @RequestBody CachorroInputDto cachorroInputDto) {
+		try {
+			Cachorro cachorro = cachorroMapper.mapearCachorro(cachorroInputDto);
+			cachorro.setId(id);
+			cachorro = cachorroService.salvar(cachorro);
+			CachorroOutputDto cachorroOutputDto = cachorroMapper.mapearCachorroOutPutDto(cachorro);
+			return ResponseEntity.ok(cachorroOutputDto);
+		} catch (IllegalArgumentException e) {
+			ErroDto erroDto = new ErroDto(e.getMessage());
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(erroDto);
+		} catch (Exception e) {
+			ErroDto erroDto = new ErroDto(e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erroDto);
+		}
+		
+		
 	}
+	
 
 }

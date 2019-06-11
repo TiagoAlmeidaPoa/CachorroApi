@@ -89,6 +89,9 @@ public class IncluirCachorroTest {
 			.assertThat()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("errors[0].defaultMessage", Matchers.equalTo("o campo nome deve ser preenchido"));
+		
+		Assert.assertTrue(cachorroRepository.count() == 0);			
+
 	}
 	@Test
 	public void deveValidarCpcInvalido() {
@@ -110,6 +113,9 @@ public class IncluirCachorroTest {
 			.assertThat()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.body("errors[0].defaultMessage", Matchers.equalTo("Campo cpc inválido"));
+		
+		Assert.assertTrue(cachorroRepository.count() == 0);			
+
 	}
 	
 	@Test
@@ -132,6 +138,9 @@ public class IncluirCachorroTest {
 		.assertThat()
 		.statusCode(HttpStatus.EXPECTATION_FAILED.value())
 		.body("mensagem", Matchers.equalTo("porte invalido. porte deve ser Pequeno, Médio ou Grande"));
+		
+		Assert.assertTrue(cachorroRepository.count() == 0);			
+
 	}
 
 }

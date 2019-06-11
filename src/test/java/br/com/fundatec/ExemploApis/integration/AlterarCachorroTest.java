@@ -1,6 +1,6 @@
 package br.com.fundatec.ExemploApis.integration;
 
-import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHeaders; 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -77,9 +77,103 @@ public class AlterarCachorroTest {
 		Assert.assertEquals("Grande", cachorroAlterado.getPorte());
 		Assert.assertEquals(6, cachorroAlterado.getIdade().intValue());
 		
-
-
-
+	}
+	
+	@Test
+	public void deveFalharAoAlterarCachorroSemNome() {
+		Cachorro cachorro = new Cachorro(null, "Bob", "Poodle", "Pequeno", 3);
+		         cachorro = cachorroRepository.save(cachorro);
+		         
+		           	RestAssured
+			 		.given()
+			 		.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+			 		.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+			 		.body("{" + 
+			 				"	\"raca\": \"Chow chow\"," + 
+			 				"	\"porte\": \"Grande\"," + 
+			 				"	\"idade\": 6" + 
+			 				"}") 
+			 		.when()
+			 		.put("/v1/cachorros/{id}",cachorro.getId())
+			 		.then()
+			 		.assertThat()
+			 		.statusCode(HttpStatus.BAD_REQUEST.value())
+			 		.body("errors[0].defaultMessage", Matchers.equalTo("o campo nome deve ser preenchido"));
+		           	
+		           	
+		         Cachorro cachorroAlterado = cachorroRepository.findById(cachorro.getId()).orElse(null);
+		 		Assert.assertEquals("Bob", cachorroAlterado.getNome());
+		 		Assert.assertEquals("Poodle", cachorroAlterado.getRaca());
+		 		Assert.assertEquals("Pequeno", cachorroAlterado.getPorte());
+		 		Assert.assertEquals(3, cachorroAlterado.getIdade().intValue());	         
+		         
+	}
+	
+	@Test
+	public void falharAoAlterarCpcInvalido() {
+		
+		Cachorro cachorro = new Cachorro(null, "Bob", "Poodle", "Pequeno", 3);
+        cachorro = cachorroRepository.save(cachorro);
+        
+          	RestAssured
+	 		.given()
+	 		.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+	 		.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+	 		.body("{" + 
+					" \"nome\": \"Urso\"," +
+					"	\"raca\": \"Pastor Belga\"," + 
+					"	\"porte\": \"Grande\"," + 
+					"	\"idade\": 2," + 
+					"   \"cpc\": \"cpc\" " +
+					"}"
+					)
+	 		.when()
+	 		.put("/v1/cachorros/{id}",cachorro.getId())
+	 		.then()
+	 		.assertThat()
+	 		.statusCode(HttpStatus.BAD_REQUEST.value())
+			.body("errors[0].defaultMessage", Matchers.equalTo("Campo cpc inválido"));
+          	
+          	
+        Cachorro cachorroAlterado = cachorroRepository.findById(cachorro.getId()).orElse(null);
+		Assert.assertEquals("Bob", cachorroAlterado.getNome());
+		Assert.assertEquals("Poodle", cachorroAlterado.getRaca());
+		Assert.assertEquals("Pequeno", cachorroAlterado.getPorte());
+		Assert.assertEquals(3, cachorroAlterado.getIdade().intValue());	
+		
+	}
+	
+	@Test
+	public void deveFalharAoValidarPorteDoCachorro() {
+		
+		Cachorro cachorro = new Cachorro(null, "Bob", "Poodle", "Pequeno", 3);
+        cachorro = cachorroRepository.save(cachorro);
+        
+          	RestAssured
+	 		.given()
+	 		.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+	 		.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+	 		.body("{" + 
+					" \"nome\": \"Urso\"," +
+					"	\"raca\": \"Pastor Belga\"," + 
+					"	\"porte\": \"grande\"," + 
+					"	\"idade\": 2," + 
+					"   \"cpc\": \"012.345.678-90\" " +
+					"}"
+					)
+	 		.when()
+	 		.put("/v1/cachorros/{id}",cachorro.getId())
+	 		.then()
+	 		.assertThat()
+	 		.statusCode(HttpStatus.EXPECTATION_FAILED.value())
+			.body("mensagem", Matchers.equalTo("porte invalido. porte deve ser Pequeno, Médio ou Grande"));
+          	
+          	
+        Cachorro cachorroAlterado = cachorroRepository.findById(cachorro.getId()).orElse(null);
+		Assert.assertEquals("Bob", cachorroAlterado.getNome());
+		Assert.assertEquals("Poodle", cachorroAlterado.getRaca());
+		Assert.assertEquals("Pequeno", cachorroAlterado.getPorte());
+		Assert.assertEquals(3, cachorroAlterado.getIdade().intValue());	
 		
 	}
 
