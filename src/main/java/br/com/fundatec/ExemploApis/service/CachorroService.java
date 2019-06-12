@@ -30,7 +30,13 @@ public class CachorroService {
 		return cachorroRepository.save(cachorro);
 	}
 	public void deletar(Long id) { // aqui estou deletando do banco
-		 cachorroRepository.deleteById(id);
+		
+		if(cachorroRepository.existsById(id)) {
+			cachorroRepository.deleteById(id);
+		}else {
+			throw new IllegalArgumentException("Cachorrro não existe para este ID");
+		}
+		 
 	}
 	
 	private void validarSalvarCachorro(Cachorro cachorro) {

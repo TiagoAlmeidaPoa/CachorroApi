@@ -37,25 +37,31 @@ public class DeletarCachorroTeste {
 		RestAssured.baseURI = "http://localhost";
 		cachorroRepository.deleteAll();
 	}
-	@Test 
+
+	@Test
 	public void deveDeletarUmCachorro() {
 		Cachorro cachorro = new Cachorro(null, "Tobias", "Beagle", "Pequeno", 2);
-		 		cachorro = cachorroRepository.save(cachorro);
-		 		
-		 		RestAssured
-		 		.given()
-		 		.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-		 		.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-		 		.when()
-		 		.delete("/v1/cachorros/{id}",cachorro.getId())
-		 		.then()
-		 		.assertThat()
-		 		.statusCode(HttpStatus.OK.value());
-		 		
-		 
+		cachorro = cachorroRepository.save(cachorro);
+
+		RestAssured.given().header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).when()
+				.delete("/v1/cachorros/{id}", cachorro.getId()).then().assertThat().statusCode(HttpStatus.OK.value());
+
 		Cachorro cachorroDeletado = cachorroRepository.findById(cachorro.getId()).orElse(null);
-		Assert.assertNull(cachorroDeletado);		
-		
+		Assert.assertNull(cachorroDeletado);
+
+	}
+
+	@Test
+	public void deveValidarCachorroInesistenteDeletado() {
+
+		RestAssured.given().header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+				.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).when()
+				.delete("/v1/cachorros/{id}", 7).then().assertThat().statusCode(HttpStatus.NOT_FOUND.value())
+				.body("mensagem", Matchers.equalTo("Cachorrro não existe para este ID"));
+
+		Cachorro cachorroDeletado = cachorroRepository.findById(7L).orElse(null);
+		Assert.assertNull(cachorroDeletado);
 	}
 
 }
