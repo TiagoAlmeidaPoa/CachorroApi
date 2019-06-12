@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,6 +85,12 @@ public class CachorroController {
 		cachorro = cachorroService.salvar(cachorro);
 		CachorroOutputDto cachorroOutputDto = cachorroMapper.mapearCachorroOutPutDto(cachorro);
 		return ResponseEntity.ok(cachorroOutputDto);
+	} 
+	
+	@DeleteMapping("/v1/cachorros/{id}")
+	public ResponseEntity<?> deletarCachorro(@PathVariable Long id){
+		cachorroService.deletar(id);
+		return ResponseEntity.ok().build();
 	} 
 	
 

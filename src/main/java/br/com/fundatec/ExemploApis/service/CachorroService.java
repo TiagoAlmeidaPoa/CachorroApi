@@ -29,6 +29,9 @@ public class CachorroService {
 		validarSalvarCachorro(cachorro);
 		return cachorroRepository.save(cachorro);
 	}
+	public void deletar(Long id) { // aqui estou deletando do banco
+		 cachorroRepository.deleteById(id);
+	}
 	
 	private void validarSalvarCachorro(Cachorro cachorro) {
 		validarPorte(cachorro);
