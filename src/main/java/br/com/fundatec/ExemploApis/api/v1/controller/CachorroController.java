@@ -1,5 +1,7 @@
 package br.com.fundatec.ExemploApis.api.v1.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,6 +23,7 @@ import br.com.fundatec.ExemploApis.api.v1.dto.CachorroOutputDto;
 import br.com.fundatec.ExemploApis.api.v1.dto.ErroDto;
 import br.com.fundatec.ExemploApis.api.v1.dto.cachorroAlterarIdadeDto;
 import br.com.fundatec.ExemploApis.entity.Cachorro;
+import br.com.fundatec.ExemploApis.integration.ConsultarCachorroTest;
 import br.com.fundatec.ExemploApis.mapper.CachorroMapper;
 import br.com.fundatec.ExemploApis.service.CachorroService;
 
@@ -34,14 +37,24 @@ public class CachorroController {
 		this.cachorroService = cachorroService;
 		this.cachorroMapper = cachorroMapper;
 	}
+	@GetMapping("/v1/cachorros/{id}")
+	public ResponseEntity<?> ConsultarCachorro(@PathVariable Long id){		
+		try {
+			Cachorro cachorro = cachorroService.consultar(id);
+			CachorroOutputDto cachorroOutputDto = cachorroMapper.mapearCachorroOutPutDto(cachorro);
+			return ResponseEntity.ok(cachorroOutputDto);
+		} catch (IllegalArgumentException e) {
+			ErroDto erroDto = new ErroDto(e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroDto);
+		}
+	}
 
 	@GetMapping("/v1/cachorros") // anotação esta pegando
 	public ResponseEntity<List<CachorroOutputDto>> getCachorros() {
 
-
 		List<Cachorro> listaCachorro = cachorroService.listarTodos();
 		List<CachorroOutputDto> listaCachorroDto = cachorroMapper.mapearListaCachorroOutPutDto(listaCachorro);
-		return ResponseEntity.status(HttpStatus.OK).body(listaCachorroDto);
+		return ResponseEntity.ok(listaCachorroDto);
 	}
 
 	@PostMapping("/v1/cachorros") // anotação indica que esta enviando ou incluindo
@@ -97,9 +110,6 @@ public class CachorroController {
 			ErroDto erroDto = new ErroDto(e.getMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroDto);
 		}
-	} 
-	
-	
-	
+	} 	
 
 }

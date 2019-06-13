@@ -52,7 +52,7 @@ public class CachorroService {
 	public Cachorro consultar(Long id) {
 		
 		return cachorroRepository.findById(id)
-				.orElseThrow(()-> new RuntimeException("Não encontrou cachorro para o id"+id));
+				.orElseThrow(()-> new IllegalArgumentException("Não encontrou cachorro para o id: "+id));
 	}
 
 }
