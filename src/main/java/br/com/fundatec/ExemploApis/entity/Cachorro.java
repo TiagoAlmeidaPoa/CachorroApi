@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.ManyToAny;
 
 @Entity
 public class Cachorro {
@@ -16,6 +20,11 @@ public class Cachorro {
 	private String porte;
 	private Integer idade;
 	
+	@ManyToOne
+	@JoinColumn(name = "idPessoa")
+	private Pessoa pessoa;
+	
+
 	public Cachorro() {
 		
 	}
@@ -69,6 +78,13 @@ public class Cachorro {
 		this.idade = idade;
 	}
 	
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
 	
 	
 }
