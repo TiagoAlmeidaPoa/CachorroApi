@@ -21,8 +21,8 @@ public class CachorroService {
 		this.porteParametroService = porteParametroService;
 	}
 
-	public List<Cachorro> listarTodos(){
-		return (List<Cachorro>) cachorroRepository.findAll();
+	public List<Cachorro> listar(String nome){
+		return cachorroRepository.findByNomeContainingIgnoringCase(nome);
 	}
 	
 	public Cachorro salvar(Cachorro cachorro) { // aqui estou incluindo no banco
