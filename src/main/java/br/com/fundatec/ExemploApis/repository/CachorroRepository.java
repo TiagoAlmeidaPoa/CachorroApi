@@ -11,5 +11,8 @@ import br.com.fundatec.ExemploApis.entity.Cachorro;
 public interface CachorroRepository extends CrudRepository<Cachorro, Long> {
 	
 	List<Cachorro> findByNomeContainingIgnoringCase(String nome);
+
+	List<Cachorro> findByNomeContainingIgnoringCaseAndIdadeBetween(String nome, Integer idadeMinima,
+			Integer idadeMaxima);
 	
 }

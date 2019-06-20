@@ -55,4 +55,10 @@ public class CachorroService {
 				.orElseThrow(()-> new IllegalArgumentException("Não encontrou cachorro para o id: "+id));
 	}
 
+	public List<Cachorro> listar(String nome, Integer idadeMinima, Integer idadeMaxima) {
+		
+		return cachorroRepository.findByNomeContainingIgnoringCaseAndIdadeBetween(nome,idadeMinima,idadeMaxima);
+		
+	}
+
 }

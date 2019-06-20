@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +56,15 @@ public class CachorroController {
 			ErroDto erroDto = new ErroDto(e.getMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroDto);
 		}
+	}
+	
+	@GetMapping("/v1/cachorros/exercicio")
+	public ResponseEntity<List<CachorroOutputDto>> getCachorrosNomeIdade(@RequestParam String nome, 
+			@RequestParam Integer idadeMinima, 
+			@RequestParam Integer idadeMaxima){
+		List<Cachorro> listaCachorroNomeIdade = cachorroService.listar(nome,idadeMinima,idadeMaxima);
+		List<CachorroOutputDto> listaCachorroNomeIdadeDto = cachorroMapper.mapearListaCachorroOutPutDto(listaCachorroNomeIdade);
+		return ResponseEntity.ok(listaCachorroNomeIdadeDto);
 	}
 
 	@GetMapping("/v1/cachorros") // anotação esta pegando

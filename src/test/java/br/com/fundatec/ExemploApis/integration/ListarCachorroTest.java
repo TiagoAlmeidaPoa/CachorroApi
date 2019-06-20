@@ -78,7 +78,7 @@ public class ListarCachorroTest {
 		List<String> portesEsperados = Arrays.asList("Médio", "Pequeno");
 		List<Integer> idadesEsperadas = Arrays.asList(15, 10);
 		
-		Assert.assertEquals(resultado.length, 2);
+		Assert.assertEquals(2, resultado.length);
 		
 		for (CachorroOutputDto cachorroOutputDto : resultado) {
 			Assert.assertTrue("Não encontrou o nome " + cachorroOutputDto.getNome() + "na lista de esperados", nomesEsperados.contains(cachorroOutputDto.getNome()));
@@ -86,6 +86,42 @@ public class ListarCachorroTest {
 			Assert.assertTrue(portesEsperados.contains(cachorroOutputDto.getPorte()));
 			Assert.assertTrue(idadesEsperadas.contains(cachorroOutputDto.getIdade()));
 		}
+	}
+	
+	@Test
+	public void deveListarNomeIdadeMinimaEIdadeMaxima() {
+		
+		cachorroRepository.save(new Cachorro(null,"Bob","Poodle","Médio",15));
+		cachorroRepository.save(new Cachorro(null,"Rex","Pitbull","Grande",4));
+		cachorroRepository.save(new Cachorro(null,"Roberto","Chihuahua","Pequeno",10));	
+		
+		CachorroOutputDto[] resultado = RestAssured
+				.given()
+				.when()
+				.get("/v1/cachorros?nome=Rex&idadeMinima=1&idadeMaxima=15")
+				.then()
+				.assertThat()			
+				.statusCode(HttpStatus.OK.value())
+				.extract()
+				.as(CachorroOutputDto[].class);
+		
+		List<String> nomesEsperados = Arrays.asList("Rex");
+		List<String> racasEsperadas = Arrays.asList("Pitbull");
+		List<String> portesEsperados = Arrays.asList("Grande");
+		List<Integer> idadesEsperadas = Arrays.asList(4);
+		
+		Assert.assertEquals(1 , resultado.length);
+		
+		for (CachorroOutputDto cachorroOutputDto : resultado) {
+			
+			Assert.assertTrue("Não encontrou o nome " + cachorroOutputDto.getNome() + " na lista de esperados", nomesEsperados.contains(cachorroOutputDto.getNome()));
+			Assert.assertTrue(racasEsperadas.contains(cachorroOutputDto.getRaca()));
+			Assert.assertTrue(portesEsperados.contains(cachorroOutputDto.getPorte()));
+			Assert.assertTrue(idadesEsperadas.contains(cachorroOutputDto.getIdade()));
+			
+		}
+
+		
 	}
 	
 }
