@@ -1,12 +1,9 @@
 package br.com.fundatec.ExemploApis.api.v1.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,10 +22,12 @@ import br.com.fundatec.ExemploApis.api.v1.dto.ErroDto;
 import br.com.fundatec.ExemploApis.api.v1.dto.cachorroAlterarIdadeDto;
 import br.com.fundatec.ExemploApis.entity.Cachorro;
 import br.com.fundatec.ExemploApis.entity.Pessoa;
-import br.com.fundatec.ExemploApis.integration.ConsultarCachorroTest;
 import br.com.fundatec.ExemploApis.mapper.CachorroMapper;
 import br.com.fundatec.ExemploApis.service.CachorroService;
 import br.com.fundatec.ExemploApis.service.PessoaService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 public class CachorroController {
@@ -47,6 +45,12 @@ public class CachorroController {
 	}
 
 	@GetMapping("/v1/cachorros/{id}")
+	@ApiOperation(value = "Consulta um cachorro",
+    notes = "Consulta um cachorro pelo o id passado como parâmetro, caso não encontre retorna um codigo de erro")
+	@ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Cachorro retornado com sucesso", response = CachorroOutputDto.class),
+	})
+	
 	public ResponseEntity<?> ConsultarCachorro(@PathVariable Long id){		
 		try {
 			Cachorro cachorro = cachorroService.consultar(id);
@@ -76,6 +80,13 @@ public class CachorroController {
 	}
 
 	@PostMapping("/v1/cachorros") // anotação indica que esta enviando ou incluindo
+	
+	@GetMapping("/v1/cachorros/{id}")
+	@ApiOperation(value = "Inclui um cachorro",
+    notes = "Inclui um cachorro no banco")
+	@ApiResponses(value = {
+    @ApiResponse(code = 201, message = "Cachorro incluido com sucesso", response = CachorroOutputDto.class),
+	})
 	public ResponseEntity<?> incluirCachorro(@Valid @RequestBody CachorroInputDto cachorroInputDto) {
 		try {
 			Cachorro cachorro = cachorroMapper.mapearCachorro(cachorroInputDto);
@@ -97,6 +108,13 @@ public class CachorroController {
 	}
 	
 	@PutMapping("/v1/cachorros/{id}")
+	
+	@GetMapping("/v1/cachorros/{id}")
+	@ApiOperation(value = "Alterar Cachorro",
+    notes = "Alterar um cachorro pelo o id passado como parâmetro, caso não encontre retorna um codigo de erro")
+	@ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Cachorro Alterado com sucesso", response = CachorroOutputDto.class),
+	})
 	public ResponseEntity<?> alterarCachorro(@PathVariable Long id,@Valid @RequestBody CachorroInputDto cachorroInputDto) {
 		try {
 			Cachorro cachorro = cachorroMapper.mapearCachorro(cachorroInputDto);
@@ -115,6 +133,13 @@ public class CachorroController {
 	}
 	
 	@PatchMapping("/v1/cachorros/{id}")
+	
+	@GetMapping("/v1/cachorros/{id}")
+	@ApiOperation(value = "Alterar a idade de um Cachorro",
+    notes = "Alterar a idade de um cachorro pelo id passado como parâmetro")
+	@ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Idade do Cachorro Alterada com sucesso", response = CachorroOutputDto.class),
+	})
 	public ResponseEntity<?> alterarIdadeCachorro(@PathVariable Long id,@Valid @RequestBody cachorroAlterarIdadeDto cachorroAlterarIdadeDto){
 		Cachorro cachorro = cachorroService.consultar(id);
 		cachorro.setIdade(cachorroAlterarIdadeDto.getIdade());
@@ -123,7 +148,26 @@ public class CachorroController {
 		return ResponseEntity.ok(cachorroOutputDto);
 	} 
 	
+	@GetMapping("/v1/cachorros/lista-todos")
+	public ResponseEntity<?> listarTodos(@RequestParam(required=false) Long id, 
+										@RequestParam(required=false) String nome, 
+										@RequestParam(required=false) String raca, 
+										@RequestParam(required=false) String porte, 
+										@RequestParam(required=false) Integer idade ){
+		List<Cachorro> listaCachorros = cachorroService.listar(id, nome, raca, porte, idade);
+		List<CachorroOutputDto> listaCachorroOutputDto = cachorroMapper.mapearListaCachorroOutPutDto(listaCachorros);
+		return ResponseEntity.ok(listaCachorroOutputDto);
+	}
+	
+	
 	@DeleteMapping("/v1/cachorros/{id}")
+	
+	@GetMapping("/v1/cachorros/{id}")
+	@ApiOperation(value = "Deleta um Cachorro",
+    notes = "Deleta um cachorro pelo id passado como parâmetro, caso não encontre retorna um codigo de erro")
+	@ApiResponses(value = {
+    @ApiResponse(code = 200, message = "Cachorro Deletado com sucesso", response = CachorroOutputDto.class),
+	})
 	public ResponseEntity<?> deletarCachorro(@PathVariable Long id){
 		
 		try {

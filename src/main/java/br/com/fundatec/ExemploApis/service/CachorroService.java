@@ -48,7 +48,8 @@ public class CachorroService {
 			throw new IllegalArgumentException("porte invalido. porte deve ser Pequeno, Médio ou Grande");
 		}		
 	}
-
+	
+	
 	public Cachorro consultar(Long id) {
 		
 		return cachorroRepository.findById(id)
@@ -59,6 +60,10 @@ public class CachorroService {
 		
 		return cachorroRepository.findByNomeContainingIgnoringCaseAndIdadeBetween(nome,idadeMinima,idadeMaxima);
 		
+	}
+	
+	public List<Cachorro> listar(Long id, String nome, String raca, String porte, Integer idade) {
+		return cachorroRepository.listar(id, nome, raca, porte, idade);
 	}
 
 }
